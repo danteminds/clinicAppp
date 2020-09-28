@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 5, 2020 3:52:44 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.clinic.entity.ClinicPatient" table="clinic_patient" catalog="clinic_ch" optimistic-lock="version">
+        <id name="patientId" type="int">
+            <column name="patient_id" />
+            <generator class="identity" />
+        </id>
+        <property name="patientName" type="string">
+            <column name="patient_name" length="200" not-null="true" />
+        </property>
+        <property name="patientPhone" type="string">
+            <column name="patient_phone" length="45" />
+        </property>
+        <property name="patientEmail" type="string">
+            <column name="patient_email" length="45" />
+        </property>
+        <property name="patientBirthDt" type="string">
+            <column name="patient_birth_dt" length="45" />
+        </property>
+        <property name="patientAge" type="string">
+            <column name="patient_age" length="45" />
+        </property>
+        <property name="patientCreateDt" type="string">
+            <column name="patient_create_dt" length="45" />
+        </property>
+        <set name="patientVisits" table="patient_visit" inverse="true" cascade="all" lazy="false" fetch="select" order-by="visit_no asc">
+            <key>
+                <column name="patient_id" not-null="true" />
+            </key>
+            <one-to-many class="com.clinic.entity.PatientVisit" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/home.xhtml">
+	<ui:define name="body">
+
+		<h:form id="patientVisitsFrm" dir="rtl"
+			style="margin: auto;width: 80%;padding: 10px;">
+			<p:growl id="messages"></p:growl>
+			<h:panelGroup id="display">
+				<p:panel header="Clinic Patients" id="clinicPatientInfoPanel"
+					style="text-align: center;">
+					<p:panelGrid columns="4"
+						style="margin: auto;width: 80%;margin-top:10px;">
+
+						<p:outputLabel value="Patient Name:" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientName}" />
+						<p:outputLabel value="Patient Id" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientId}" />
+						<p:outputLabel value="Patient Age:" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientAge}" />
+						<p:outputLabel value="Patient Phone:" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientPhone}" />
+
+
+					</p:panelGrid>
+
+					<h:panelGroup
+						style="display:block; text-align:center; margin-top:25px">
+
+						<p:commandButton styleClass="cssButton" id="newPatientVisit"
+							value="Add New visit" icon="pi pi-user-plus" process="@this"
+							actionListener="#{patientVisitAction.prepareCreate(clinicPatientAction.selectedPatient.patientId)}" />
+
+						<p:commandButton styleClass="cssButton" id="editPatient"
+							value="Edit Pt Info" icon="pi pi-pencil" process="@this"
+							update=":patientAgeEditForm"
+							oncomplete="PF('patientAgeEditDialog').show()" />
+
+						<p:commandButton id="printTableXls" ajax="false"
+							value="Export Visits" icon="pi pi-print">
+							<p:dataExporter type="xlsx" target="patientVisitPrintTable"
+								fileName="patientVisits_#{clinicPatientAction.getToday()}" />
+						</p:commandButton>
+
+						<p:commandButton value="Back" icon="pi pi-step-backward"
+							actionListener="#{clinicPatientAction.searchPatients()}"
+							oncomplete="window.history.back();" />
+
+
+
+					</h:panelGroup>
+
+				</p:panel>
+
+
+				<p:dataTable id="patientVisitTable" widgetVar="patientVisitDatalist"
+					var="visit" emptyMessage="No PtientVisits Found"
+					value="#{clinicPatientAction.selectedPatient.patientVisits}"
+					paginatorAlwaysVisible="true" paginator="true"
+					rowsPerPageTemplate="5,10,15,20,30,40,50" rowKey="#{visit.id}"
+					rows="10" selectionMode="single"
+					selection="#{patientVisitAction.selectedPatVisit}"
+					filterEvent="enter">
+
+					<p:ajax event="rowSelect"
+						listener="#{patientVisitAction.prepareEdit()}" />
+
+					<p:column headerText="Visit No" filterBy="#{visit.id.visitNo}"
+						filterMatchMode="contains">
+						<h:outputText value="#{visit.id.visitNo}" />
+					</p:column>
+					<p:column headerText="visit Date" filterBy="#{visit.visitDt}"
+						filterMatchMode="contains">
+						<h:outputText value="#{visit.visitDt}" dir="ltr" />
+					</p:column>
+
+					<p:column rendered="false" headerText="patientDiagnose">
+						<h:outputText value="#{visit.patientDiagnose}" />
+					</p:column>
+
+					<f:facet name="footer">
+						<p:outputLabel rendered="true"
+							value="Visits Count : #{clinicPatientAction.selectedPatient.getNumberOfVisits()}" />
+					</f:facet>
+
+				</p:dataTable>
+
+
+				<p:dataTable rendered="false" id="patientVisitPrintTable"
+					widgetVar="patientVisitPrintDatalist" var="visit"
+					value="#{clinicPatientAction.selectedPatient.patientVisits}">
+					<p:column headerText="Visit No" filterBy="#{visit.id.visitNo}"
+						filterMatchMode="contains">
+						<h:outputText value="#{visit.id.visitNo}" />
+					</p:column>
+					<p:column headerText="visit Date" filterBy="#{visit.visitDt}"
+						filterMatchMode="contains">
+						<h:outputText value="#{visit.visitDt}" />
+					</p:column>
+					<p:column headerText="patientDiagnose">
+						<h:outputText value="#{visit.patientDiagnose}" />
+					</p:column>
+				</p:dataTable>
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<ui:include src="patientAgeEditDlg.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/home.xhtml">
+	<ui:define name="body">
+
+		<h:form id="patientVisitDetailsFrm" dir="rtl"
+			style="margin: auto;width: 80%;padding: 10px;">
+			<p:growl id="messages"></p:growl>
+			<h:panelGroup id="display">
+				<p:panel header="Patient Info" id="clinicPatientInfoPanel"
+					style="text-align: center;">
+					<p:panelGrid columns="4"
+						style="margin: auto;width: 80%;margin-top:10px;">
+
+						<p:outputLabel value="Patient Name:" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientName}" />
+						<p:outputLabel value="Patient Id" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientId}" />
+						<p:outputLabel value="Patient Age:" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientAge}" />
+						<p:outputLabel value="Patient Phone:" style="font-weight:bold" />
+						<p:outputLabel
+							value="#{clinicPatientAction.selectedPatient.patientPhone}" />
+
+
+					</p:panelGrid>
+
+					<p:panel header="Patient Diagnose" id="patientDiagnosePanel"
+						dir="ltr" style="text-align: center;">
+
+						<p:textEditor id="patientDiagnoseEditor" widgetVar="diagnose"
+							style="text-align:left !important; direction:ltr !important;"
+							value="#{patientVisitAction.newPatVisit.patientDiagnose}"
+							dir="ltr" height="500"
+							placeholder="Insert Patient's Diagnose Here">
+							<f:facet name="toolbar">
+								<span class="ql-formats"> <select class="ql-font" /> <select
+									class="ql-size" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-bold" />
+									<button class="ql-italic" />
+									<button class="ql-underline" />
+									<button class="ql-strike" />
+								</span>
+								<span class="ql-formats"> <select class="ql-color" /> <select
+									class="ql-background" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-script" value="sub" />
+									<button class="ql-script" value="super" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-header" value="1" />
+									<button class="ql-header" value="2" />
+									<button class="ql-blockquote" />
+									<button class="ql-code-block" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-list" value="ordered" />
+									<button class="ql-list" value="bullet" />
+									<button class="ql-indent" value="-1" />
+									<button class="ql-indent" value="+1" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-direction" value="rtl" /> <select
+									class="ql-align" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-link" />
+									<button class="ql-formula" />
+								</span>
+								<span class="ql-formats">
+									<button class="ql-clean" />
+								</span>
+							</f:facet>
+						</p:textEditor>
+
+						<h:panelGroup
+							style="display:block; text-align:center; margin-top:25px">
+							<p:commandButton value="Save" update="messages"
+								actionListener="#{patientVisitAction.onEditorSave()}"
+								icon="pi pi-save" />
+							<p:commandButton value="Clear" type="button"
+								onclick="PF('diagnose').clear();" icon="pi pi-times" />
+
+							<p:commandButton value="Back" icon="pi pi-step-backward"
+								onclick="window.history.back();" />
+
+						</h:panelGroup>
+
+					</p:panel>
+
+				</p:panel>
+			</h:panelGroup>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

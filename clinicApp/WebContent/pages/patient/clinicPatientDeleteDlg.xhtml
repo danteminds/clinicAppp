@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+
+	<p:dialog id="patientDeleteDlg" widgetVar="patientDeleteDialog"
+		modal="true" resizable="false" closable="false" appendTo="@(body)"
+		header="Are You Sure?" dir="LTR" showEffect="clip" hideEffect="clip">
+		<h:form id="patientDeleteForm" dir="ltr">
+			<p:growl id="messages"></p:growl>
+
+			<h:panelGroup id="deleteDisplay">
+
+				<div style="margin: auto; padding: 10px;">
+					<p:outputLabel
+						value="The Selected Patient: '#{clinicPatientAction.selectedPatient.patientName}' will be deleted!" />
+				</div>
+
+				<div style="margin: auto; padding: 10px;">
+
+					<p:commandButton value="Yes" styleClass="ui-confirmdialog-yes"
+						icon="pi pi-check"
+						action="#{clinicPatientAction.onDeleteSelectedPatient()}"
+						update="deleteDisplay messages clinicPatientSearchFrm">
+					</p:commandButton>
+
+					<p:commandButton id="cancelBtn" value="No"
+						styleClass="ui-confirmdialog-no" icon="pi pi-times"
+						process="@this"
+						actionListener="#{clinicPatientAction.prepareNewPatient()}"
+						oncomplete="PF('patientDeleteDialog').hide()">
+						<p:resetInput target="deleteDisplay" />
+					</p:commandButton>
+
+				</div>
+
+
+
+
+			</h:panelGroup>
+		</h:form>
+
+	</p:dialog>
+
+</ui:composition>
+</html>

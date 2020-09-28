@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+
+	<p:dialog id="patientAddDlg" widgetVar="patientAddDialog" modal="true"
+		resizable="false" closable="false" appendTo="@(body)"
+		header="Add New Patient" dir="LTR" showEffect="clip" hideEffect="clip">
+		<h:form id="patientAddForm" dir="ltr">
+
+			<p:growl id="messages"></p:growl>
+
+			<h:panelGroup id="display">
+
+				<p:panelGrid columns="2">
+					<p:outputLabel for="patientNameAdd" value="Enter Patient Name:" />
+					<p:inputText id="patientNameAdd"
+						value="#{clinicPatientAction.patient.patientName}" required="true"
+						requiredMessage="Patient Name is Required" />
+					<p:outputLabel for="patientAgeAdd" value="Enter Patient Age:" />
+					<p:inputText id="patientAgeAdd"
+						value="#{clinicPatientAction.patient.patientAge}" />
+					<p:outputLabel for="patientPhoneAdd" value="Enter Patient Phone:" />
+					<p:inputText id="patientPhoneAdd"
+						value="#{clinicPatientAction.patient.patientPhone}" />
+				</p:panelGrid>
+
+				<div style="margin: auto; padding: 10px;">
+					<p:commandButton icon="pi pi-user-plus" value="Add Patient"
+						action="#{clinicPatientAction.register()}"
+						update="display messages clinicPatientSearchFrm">
+					</p:commandButton>
+
+					<p:commandButton id="resetBtn" value="Clear" update="display"
+						actionListener="#{clinicPatientAction.prepareNewPatient()}"
+						process="@this" icon="pi pi-replay">
+						<p:resetInput target="display" />
+					</p:commandButton>
+
+					<p:commandButton id="cancelBtn" value="Close" icon="pi pi-times"
+						process="@this"
+						actionListener="#{clinicPatientAction.prepareNewPatient()}"
+						oncomplete="PF('patientAddDialog').hide()">
+						<p:resetInput target="display" />
+					</p:commandButton>
+
+				</div>
+
+
+
+
+			</h:panelGroup>
+		</h:form>
+
+	</p:dialog>
+
+</ui:composition>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ar" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/home.xhtml">
+	<ui:define name="body">
+
+		<h:form id="clinicPatientSearchFrm" dir="rtl"
+			style="margin: auto;width: 80%;padding: 10px;">
+			<p:remoteCommand name="onload" autoRun="true"
+				process="@this searchData"
+				update="clinicPatientSearchPanel searchData" />
+			<p:growl id="messages"></p:growl>
+			<h:panelGroup id="display">
+				<p:panel header="Search For Patients" id="clinicPatientSearchPanel"
+					style="text-align: center;">
+					<p:panelGrid columns="4"
+						style="margin: auto;width: 80%;margin-top:10px;">
+
+						<p:outputLabel value="Patient Name:"></p:outputLabel>
+						<p:inputText
+							value="#{clinicPatientAction.searchPatient.patientName}"></p:inputText>
+						<p:outputLabel value="Patient Phone:"></p:outputLabel>
+						<p:inputText
+							value="#{clinicPatientAction.searchPatient.patientPhone}"></p:inputText>
+
+						<p:panelGrid id="hiddenPannel" rendered="false">
+							<p:outputLabel value="patientId:"></p:outputLabel>
+							<p:inputText
+								value="#{clinicPatientAction.searchPatient.patientId}"></p:inputText>
+							<p:outputLabel value="Patient Age:"></p:outputLabel>
+							<p:inputText
+								value="#{clinicPatientAction.searchPatient.patientAge}"></p:inputText>
+
+							<p:commandButton styleClass="cssButton" id="detailsBtn"
+								value="details" icon="ui-icon-folder-open" action="/home.xhtml" />
+						</p:panelGrid>
+					</p:panelGrid>
+
+					<h:panelGroup
+						style="display:block; text-align:center; margin-top:25px">
+						<p:commandButton id="searchBtn" ajax="true" value="Search"
+							icon="pi pi-search"
+							actionListener="#{clinicPatientAction.searchPatients()}"
+							update="display messages"
+							oncomplete="PF('patSrchDatalist').clearFilters()" />
+						<p:commandButton id="newSearchBtn" ajax="true" value="New Search"
+							icon="pi pi-replay" update="display" process="@this"
+							actionListener="#{clinicPatientAction.init()}"
+							oncomplete="PF('patSrchDatalist').clearFilters()">
+							<p:resetInput target="display" />
+						</p:commandButton>
+
+						<p:commandButton id="backUpData" ajax="false" value="Backup Data"
+							icon="pi pi-save"
+							actionListener="#{clinicPatientAction.onBackupSelected()}"
+							oncomplete="#{clinicPatientAction.onBackupCompleted()}">
+							<p:dataExporter type="xlsx"
+								target="clinicPatientTableBkp,patientVisistTableBkp"
+								fileName="clinicBackup_#{clinicPatientAction.getToday()}" />
+
+						</p:commandButton>
+					</h:panelGroup>
+
+
+
+
+				</p:panel>
+
+
+				<p:dataTable id="searchData" widgetVar="patSrchDatalist"
+					var="patient" value="#{clinicPatientAction.patientList}"
+					paginatorAlwaysVisible="true" emptyMessage="No Data Found"
+					paginator="true" rowKey="#{patient.patientId}" rows="10"
+					rowsPerPageTemplate="5,10,15,20,30,40,50" selectionMode="single"
+					selection="#{clinicPatientAction.selectedPatient}"
+					filterEvent="enter">
+
+					<p:ajax event="rowSelect"
+						listener="#{clinicPatientAction.onPatientSelected()}" />
+
+					<p:column headerText="Patient ID" filterBy="#{patient.patientId}"
+						filterMatchMode="contains" sortBy="#{patient.patientId}">
+						<h:outputText value="#{patient.patientId}" />
+					</p:column>
+					<p:column headerText="Patient Name"
+						filterBy="#{patient.patientName}" filterMatchMode="contains"
+						sortBy="#{patient.patientName}">
+						<h:outputText value="#{patient.patientName}" />
+					</p:column>
+
+					<p:column headerText="Patient Phone"
+						filterBy="#{patient.patientPhone}" filterMatchMode="contains">
+						<h:outputText value="#{patient.patientPhone}" />
+					</p:column>
+
+					<p:column headerText="Patient Dates"
+						filterBy="#{patient.patientCreateDt}" filterMatchMode="contains"
+						sortBy="#{patient.patientCreateDt}">
+						<h:outputText value="#{patient.patientCreateDt}" />
+					</p:column>
+
+					<p:column headerText="Number Of Visits"
+						filterBy="#{patient.getNumberOfVisits()}"
+						filterMatchMode="contains" sortBy="#{patient.getNumberOfVisits()}">
+						<h:outputText value="#{patient.getNumberOfVisits()}" />
+					</p:column>
+
+					<p:column>
+						<p:commandButton styleClass="cssButton" value="Delete"
+							icon="pi pi-trash"
+							actionListener="#{clinicPatientAction.onDeletePatient(patient)}"
+							update=":patientDeleteForm"
+							oncomplete="PF('patientDeleteDialog').show()">
+						</p:commandButton>
+					</p:column>
+
+					<f:facet name="header">
+
+						<p:commandButton styleClass="cssButton" id="newPatient"
+							value="Add New Patient" icon="pi pi-user-plus" process="@this"
+							actionListener="#{clinicPatientAction.prepareNewPatient()}"
+							update=":patientAddForm"
+							oncomplete="PF('patientAddDialog').show()" />
+
+						<p:commandButton id="printTableXls" ajax="false"
+							value="Export Results" icon="pi pi-print">
+							<p:dataExporter type="xlsx" target="searchData"
+								fileName="searchResults_#{clinicPatientAction.getToday()}" />
+						</p:commandButton>
+
+					</f:facet>
+
+					<f:facet name="footer">
+						<p:outputLabel rendered="true"
+							value="Results Count : #{clinicPatientAction.getSearchResultSize()}" />
+					</f:facet>
+
+				</p:dataTable>
+
+
+				<p:dataTable rendered="false" id="clinicPatientTableBkp"
+					widgetVar="patientBkp"
+					value="#{clinicPatientAction.patientBackupList}" var="bkpPatient">
+
+					<p:column headerText="patientId">
+						<h:outputText value="#{bkpPatient.patientId}" />
+					</p:column>
+					<p:column headerText="patientName">
+						<h:outputText value="#{bkpPatient.patientName}" />
+					</p:column>
+
+					<p:column headerText="patientPhone">
+						<h:outputText value="#{bkpPatient.patientPhone}" />
+					</p:column>
+
+					<p:column headerText="patientAge">
+						<h:outputText value="#{bkpPatient.patientAge}" />
+					</p:column>
+
+					<p:column headerText="patientCreateDt">
+						<h:outputText value="#{bkpPatient.patientCreateDt}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<p:dataTable rendered="false" id="patientVisistTableBkp"
+					widgetVar="visitBkp"
+					value="#{patientVisitAction.patVisitBackupList}" var="bkpVisit">
+
+					<p:column headerText="patientId">
+						<h:outputText value="#{bkpVisit.id.patientId}" />
+					</p:column>
+					<p:column headerText="visitNo">
+						<h:outputText value="#{bkpVisit.id.visitNo}" />
+					</p:column>
+
+					<p:column headerText="visitDt">
+						<h:outputText value="#{bkpVisit.visitDt}" />
+					</p:column>
+
+					<p:column headerText="patientDiagnose">
+						<h:outputText value="#{bkpVisit.patientDiagnose}" />
+					</p:column>
+
+				</p:dataTable>
+
+
+			</h:panelGroup>
+
+		</h:form>
+
+		<ui:include src="clinicPatientAddDlg.xhtml" />
+		<ui:include src="clinicPatientDeleteDlg.xhtml" />
+	</ui:define>
+</ui:composition>
+</html>

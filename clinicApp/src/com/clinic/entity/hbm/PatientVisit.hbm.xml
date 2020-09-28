@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Sep 5, 2020 3:52:44 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.clinic.entity.PatientVisit" table="patient_visit" catalog="clinic_ch" optimistic-lock="version">
+        <composite-id name="id" class="com.clinic.entity.PatientVisitId">
+            <key-property name="patientId" type="int">
+                <column name="patient_id" />
+            </key-property>
+            <key-property name="visitNo" type="int">
+                <column name="visit_no" />
+            </key-property>
+        </composite-id>
+        <!--<many-to-one name="clinicPatient" class="com.clinic.entity.ClinicPatient" update="false" insert="false" fetch="select">
+            <column name="patient_id" not-null="true" />
+        </many-to-one>
+        -->
+        <property name="visitDt" type="string">
+            <column name="visit_dt" length="24" not-null="true" />
+        </property>
+        <property name="patientDiagnose" type="string">
+            <column name="patient_diagnose" length="500" />
+        </property>
+    </class>
+</hibernate-mapping>
